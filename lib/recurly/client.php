@@ -86,6 +86,8 @@ class Recurly_Client
 
   public $last_response;
   public $last_request;
+  public static $last_response_st;
+  public static $last_request_st;
 
   /**
    * Create a new Recurly Client
@@ -189,6 +191,7 @@ class Recurly_Client
     curl_setopt($ch, CURLOPT_USERPWD, $this->apiKey());
     
     $this->last_request = [ 'url'=>$uri, 'method'=>$method, 'data'=>$data ];
+    self::$last_request_st = $this->last_request;
 
     if ('POST' == $method)
     {
@@ -231,6 +234,7 @@ class Recurly_Client
     $headers = $this->_getHeaders($header);
 
     $this->last_response = new Recurly_ClientResponse($statusCode, $headers, $body);
+    self::$last_response_st = $this->last_response;
     return $this->last_response;
   }
 
