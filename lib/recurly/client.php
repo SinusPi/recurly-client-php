@@ -84,6 +84,9 @@ class Recurly_Client
   const PATH_USAGE = 'usage';
   const PATH_DUNNING_CAMPAIGNS = 'dunning_campaigns';
 
+  public $last_response;
+  public $last_request;
+
   /**
    * Create a new Recurly Client
    * @param string API key. Do not specify to use the default API key (which must be set at the static variable)
@@ -184,6 +187,8 @@ class Recurly_Client
       'X-Api-Version: ' . Recurly_Client::$apiVersion
     ));
     curl_setopt($ch, CURLOPT_USERPWD, $this->apiKey());
+    
+    $this->last_request = [ 'url'=>$uri, 'method'=>$method, 'data'=>$data ];
 
     if ('POST' == $method)
     {
@@ -225,7 +230,8 @@ class Recurly_Client
     }
     $headers = $this->_getHeaders($header);
 
-    return new Recurly_ClientResponse($statusCode, $headers, $body);
+    $this->last_response = new Recurly_ClientResponse($statusCode, $headers, $body);
+    return $this->last_response;
   }
 
   private static function __userAgent() {
